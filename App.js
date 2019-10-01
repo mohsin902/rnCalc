@@ -40,6 +40,15 @@ export default class App extends Component {
 
       numbers.push(<View style = {styles.row}>{row}</View>)
     }
+
+    let operations = ['+', '-', '*' , '/']
+    let opArr = []
+    for(var i=0;i<4;i++){
+      opArr.push(<TouchableOpacity style = {styles.btn}>
+        <Text style = {{color : 'white', fontSize : 25}}>{operations[i]}</Text>
+      </TouchableOpacity>)
+    }
+
   return (
       <View style={styles.rootContainer}>
     <View style={styles.displayContainer}>
@@ -55,10 +64,7 @@ export default class App extends Component {
        {numbers}
       </View>
       <View style={styles.operations}>
-      <Button title = '+' />
-      <Button title = '*' />
-      <Button title = '/' />
-      <Button title = '=' />
+      {opArr}
       </View>
     </View>
 </View>
