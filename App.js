@@ -1,133 +1,79 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
+import React, { Component } from 'react';
+import { StatusBar, StyleSheet, View } from 'react-native';
 
-import React , {Component} from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-  TouchableOpacity ,
-  Button
-} from 'react-native';
-import Icon from 'react-native-vector-icons/Feather';
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import Display from './src/components/Display'
+import Buttons from './src/components/Buttons'
 
 export default class App extends Component {
-  render(){
-    let numbers = []
-    let numArr = [[1,2,3] , [4,5,6] , [7,8,9] , ['+/_',0,'.']]
-    for(var i=0;i<4;i++){
-      let row = []
-      for(var j=0;j<3;j++){
-        row.push(<TouchableOpacity style = {styles.btn}>
-          <Text style= {styles.textbtn}>{numArr[i][j]}</Text>
-        </TouchableOpacity>)
+
+  state = {
+    display: '',
+    result: ''
+  }
+
+  handleOperation = operation => {
+    if (operation === 'C') {
+      this.setState({
+        display: '',
+        result: ''
+      })
+    }
+    else if(operation === 'DEL') {
+      console.log('this is required    '+ (this.state.display))
+      let newDis = this.state.display.substring(0, this.state.display.length - 1);
+      console.log('this is after deletion   ' + newDis)
+      this.setState({
+        display: newDis,
+        result: this.state.result
+      })
+    }
+    else if(operation === '=') {
+      this.setState({
+        display: this.state.result,
+        result: ''
+      })
+    }
+    else {
+      const display = this.state.display + operation
+      let result = this.state.result
+      try {
+
+        let fixedOperation = display.split('×').join('*')
+        fixedOperation = fixedOperation.split('÷').join('/')
+        // fixedOperation = fixedOperation.split('.').join('.')
+
+        result = new String(eval(fixedOperation)).toString()
+
+      }catch(error) {
+        console.log(error)
       }
-
-      numbers.push(<View style = {styles.row}>{row}</View>)
+      this.setState({
+        display,
+        result
+      })
     }
+  }
 
-    let operations = ['+', '-', '*' , '/']
-    let opArr = []
-    for(var i=0;i<4;i++){
-      opArr.push(<TouchableOpacity style = {styles.btn}>
-        <Text style = {{color : 'white', fontSize : 25}}>{operations[i]}</Text>
-      </TouchableOpacity>)
-    }
-
-  return (
-      <View style={styles.rootContainer}>
-    <View style={styles.displayContainer}>
-      <Text style = {styles.text}> 11 * 5</Text>
-    </View>
-    <View style = {styles.midContainer}>
-      <Text style = {styles.caltext}>111</Text>
-    </View>
-  
-    
-    <View style={styles.buttons}>
-      <View style={styles.numbers}>
-       {numbers}
+  render() {
+    return (
+      <View style={styles.container}>
+        <Display state={this.state} />
+        <View style = {styles.mid}></View>
+        <Buttons operation={this.handleOperation} />
       </View>
-      <View style={styles.operations}>
-      {opArr}
-      </View>
-    </View>
-</View>
-  );
+    );
+  }
 }
-};
 
 const styles = StyleSheet.create({
-  rootContainer: {
-    flex: 1
-},
-
-displayContainer: {
-    flex: 2,
-    backgroundColor: 'white'
-},
-text : {
-    fontSize : 30,
-    color : 'black'
-},
-midContainer: {
-  flex : 1,
-  backgroundColor : 'white'
-},
-inputContainer: {
-    flex: 8,
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'stretch',
     backgroundColor: '#ffffff',
-    flexDirection : 'row',
-},
-buttons: {
-  flex: 7,
-  flexDirection : 'row'
-},
-numbers:{
-  flex : 3 , 
-  backgroundColor : 'white'
-},
-row : {
-  flexDirection : 'row',
-  flex : 1,
-  justifyContent : 'space-around',
-  alignItems : 'center'
-},
-caltext : {
-  fontSize : 24 , 
-  color : 'black'
-},
-operations : {
-  flex : 1 , 
-  backgroundColor : 'black',
-  justifyContent : 'space-around',
-  alignItems : 'stretch'
-
-},
-btn : {
-  flex : 1 ,
-  alignItems: 'center',
-  alignSelf : 'stretch',
-  justifyContent : 'center'
-},
-textbtn : {
-  fontSize : 25
-}
+  },
+  mid : {
+    flex : 0.5  ,
+    backgroundColor : '#f5f5f5'
+  }
 });
-
-
